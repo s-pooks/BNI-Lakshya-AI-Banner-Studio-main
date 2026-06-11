@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BNI Lakshya AI Banner Studio</title>
+  <!-- BNI approved fonts: Arial and Helvetica Neue are system fonts, no import needed -->
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css?v=1.0.1">
+  <!-- html2canvas for image generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header id="main-nav" class="hidden">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <img src="/assets/bni-logo-white.png" alt="BNI" style="height:28px; display:block;" onerror="this.style.display='none'">
+        <span class="brand-title">Lakshya Banner Studio</span>
+      </div>
+      <nav class="nav-links">
+        <span id="nav-username"></span>
+        <button id="nav-btn-create" class="nav-link active" onclick="app.showScreen('screen-select-type')">Create Banner</button>
+        <button id="nav-btn-history" class="nav-link" onclick="app.showScreen('screen-history')">History</button>
+        <button id="nav-btn-users" class="nav-link hidden" onclick="app.showScreen('screen-users')">Approvals</button>
+        <button id="nav-btn-admin" class="nav-link" onclick="app.showScreen('screen-admin')">Admin Settings</button>
+        <button id="nav-btn-logout" class="nav-btn-secondary" onclick="app.logout()">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main class="app-container">
+
+    <!-- SCREEN 1: LOGIN SCREEN -->
+    <section id="screen-login" class="screen active">
+        <div class="login-card glass-panel">
+
+            <img src="/assets/bni-logo-red.png" alt="BNI" style="height:64px; margin: 0 auto 1.5rem; display:block;" onerror="this.style.display='none'">
+
+            <h1>BNI Lakshya Banner Studio</h1>
+
+            <p class="subtitle">
+                Login to create and manage your AI banners.
+            </p>
+
+            <form id="login-form" onsubmit="app.handleLogin(event)">
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" placeholder="Enter Email" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Enter Password" required>
+                </div>
+
+                <!-- Forgot Password Link -->
+                <div class="forgot-password-link">
+                    <a href="#" onclick="app.showForgotPassword(); return false;">Forgot Password?</a>
+                </div>
+
+                <div id="login-error" class="error-message hidden">
+                    Invalid email or password.
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    Login
+                </button>
+
+                <div class="auth-footer">
+                    <p>
+                        Don't have an account?
+                        <a href="#"
+                          onclick="app.showScreen('screen-register')">
+                          Register Here
+                        </a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- SCREEN: FORGOT PASSWORD -->
+    <!-- SCREEN: FORGOT PASSWORD -->
+<section id="screen-forgot-password" class="screen hidden">
+    <div class="login-card glass-panel">
+
+        <img src="/assets/bni-logo-red.png" alt="BNI" style="height:64px; margin: 0 auto 1.5rem; display:block;" onerror="this.style.display='none'">
+
+        <h1 id="forgot-screen-title">Reset Password</h1>
+        <p class="subtitle" id="forgot-screen-subtitle">
+            Enter your registered email. Password fields will unlock after verification.
+        </p>
+
+        <div id="forgot-form-wrapper">
+
+            <!-- Email Field -->
+            <div class="form-group">
+                <label>Email Address</label>
+                <input
+                    type="email"
+                    id="forgot-email"
+                    placeholder="Enter your registered email"
+                    oninput="app.clearForgotError()"
+                >
+            </div>
+
+            <!-- New Password — disabled until email verified -->
+            <div class="form-group">
+                <label>New Password</label>
+                <input
+                    type="password"
+                    id="forgot-new-password"
+                    placeholder="Enter new password (min 6 characters)"
+                    disabled
+                    style="opacity: 0.4; cursor: not-allowed;"
+                    oninput="app.clearForgotError()"
+                >
+            </div>
+
+            <!-- Confirm Password — disabled until email verified -->
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input
+                    type="password"
+                    id="forgot-confirm-password"
+                    placeholder="Re-enter new password"
+                    disabled
+                    style="opacity: 0.4; cursor: not-allowed;"
+                    oninput="app.clearForgotError()"
+                >
+            </div>
+
+            <div id="forgot-error" class="forgot-error-msg hidden"></div>
+            <div id="forgot-success" class="forgot-success-msg hidden">
+                ✅ Password updated successfully! Redirecting to login...
+            </div>
+
+            <button
+                id="forgot-submit-btn"
+                class="btn-primary"
+                style="width: 100%; margin-top: 0.5rem;"
+                onclick="app.handleForgotPassword()"
+            >
+                Verify Email
+            </button>
+
+            <div class="auth-footer">
+                <p>
+                    Remembered your password?
+                    <a href="#" onclick="app.hideForgotPassword(); return false;">Back to Login</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+      <section id="screen-register" class="screen hidden">
+          <div class="login-card glass-panel">
+              <h1>Create Account</h1>
+              <form id="register-form" onsubmit="app.handleRegister(event)">
+                    <div class="form-group">
+                        <label>FULL NAME</label>
+                        <input type="text" id="register-name" placeholder="Enter Full Name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>EMAIL ADDRESS</label>
+                        <input type="email" id="register-email" placeholder="Enter Email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>PASSWORD</label>
+                        <input type="password" id="register-password" placeholder="Enter Password" required>
+                    </div>
+
+                    <!-- <div class="form-group">
+                        <label>USER TYPE</label>
+                        <select id="register-role" required>
+                            <option value="">Select User Type</option>
+                            <option value="member">Member</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div> -->
+
+                  <button type="submit" class="btn-primary"> Register </button>
+              </form>
+
+              <div class="auth-footer">
+                  <p>
+                      Already have an account?
+                      <a href="#" onclick="app.showScreen('screen-login')"> Login Here </a>
+                  </p>
+              </div>
+          </div>
+      </section>
+
+    <!-- SCREEN 2: CHOOSE BANNER TYPE -->
+    <section id="screen-select-type" class="screen hidden">
+      <div class="welcome-header-panel">
+        <h2>Welcome back, <span id="welcome-username" class="welcome-user-accent">User</span>!</h2>
+        <p>Choose a banner category below to start your quick guided generator setup.</p>
+      </div>
+
+      <div class="category-selection-grid">
+        <!-- Card 1: Visitor Invite -->
+        <div class="workflow-card glass-panel" onclick="app.startWizard('visitor_invite')">
+          <div class="workflow-card-img" style="background-image: url('/assets/stock/bni-networking-1.jpg');"></div>
+          <div class="workflow-card-content">
+            <div class="workflow-header-group">
+              <div class="card-icon invite-icon"></div>
+              <h3>Visitor Invite</h3>
+            </div>
+            <p>Invite specific business categories to our chapter. Highlights mutual connections and referral pipelines.</p>
+            <span class="btn-workflow">Start Setup <span class="arrow-icon">➔</span></span>
+          </div>
+        </div>
+
+        <!-- Card 2: Weekly Meeting -->
+        <div class="workflow-card glass-panel" onclick="app.startWizard('weekly_meeting')">
+          <div class="workflow-card-img" style="background-image: url('/assets/stock/bni-meeting-1.jpg');"></div>
+          <div class="workflow-card-content">
+            <div class="workflow-header-group">
+              <div class="card-icon meeting-icon"></div>
+              <h3>Weekly Meeting</h3>
+            </div>
+            <p>Promote the next upcoming Thursday chapter meeting. Highlights time, venue, and general visitor invitation.</p>
+            <span class="btn-workflow">Start Setup <span class="arrow-icon">➔</span></span>
+          </div>
+        </div>
+
+        <!-- Card 3: Feature Presentation -->
+        <div class="workflow-card glass-panel" onclick="app.startWizard('feature_presentation')">
+          <div class="workflow-card-img" style="background-image: url('/assets/stock/bni-speaker-1.jpg');"></div>
+          <div class="workflow-card-content">
+            <div class="workflow-header-group">
+              <div class="card-icon speaker-icon"></div>
+              <h3>Feature Presentation</h3>
+            </div>
+            <p>Highlight a member's 10-minute presentation. Perfect for promoting speakers on social feeds.</p>
+            <span class="btn-workflow">Start Setup <span class="arrow-icon">➔</span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: WIZARD INPUT FORM -->
+    <section id="screen-wizard-form" class="screen hidden">
+      <div class="back-nav">
+        <button class="btn-text" onclick="app.showScreen('screen-select-type')">← Back to Categories</button>
+      </div>
+
+      <div class="wizard-container glass-panel">
+        <div class="wizard-header">
+          <h2 id="wizard-title">Create Visitor Invite Banner</h2>
+          <p id="wizard-desc">Fill in the fields below. BNI Lakshya's AI engine will craft high-impact marketing copy.</p>
+        </div>
+
+        <form id="wizard-input-form" onsubmit="app.handleFormSubmit(event)">
+          <!-- Dynamic Form Fields Container -->
+          <div id="dynamic-fields">
+            <!-- Fields are dynamically injected here by JS -->
+          </div>
+
+          <!-- Aspect Ratio Selection -->
+          <div class="aspect-ratio-selector">
+            <label class="form-label">Select Aspect Ratio</label>
+            <div class="ratio-options">
+              <label class="ratio-card">
+                <input type="radio" name="aspectRatio" value="square" checked>
+                <div class="ratio-box square"></div>
+                <span class="ratio-label">Square (1:1)</span>
+                <span class="ratio-desc">Instagram, FB, WhatsApp Post</span>
+              </label>
+              
+              <label class="ratio-card">
+                <input type="radio" name="aspectRatio" value="portrait">
+                <div class="ratio-box portrait"></div>
+                <span class="ratio-label">Portrait (9:16)</span>
+                <span class="ratio-desc">WhatsApp Status, Stories</span>
+              </label>
+              
+              <label class="ratio-card">
+                <input type="radio" name="aspectRatio" value="landscape">
+                <div class="ratio-box landscape"></div>
+                <span class="ratio-label">Landscape (16:9)</span>
+                <span class="ratio-desc">LinkedIn, Presentations</span>
+              </label>
+            </div>
+          </div>
+
+          <div id="form-validation-error" class="error-message hidden">Please fill in all required fields.</div>
+
+          <button type="submit" class="btn-primary mt-6">Generate Copy with AI</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- SCREEN 4: AI LOADING SKELETON -->
+    <section id="screen-loading" class="screen hidden">
+      <div class="loading-container glass-panel">
+        <div class="ai-sparkle-loader">
+          <div class="sparkle s1">✦</div>
+          <div class="sparkle s2">✦</div>
+          <div class="sparkle s3">✦</div>
+          <div class="spinner"></div>
+        </div>
+        <h2 id="loader-title">Crafting Your Banner Copy</h2>
+        <p id="loader-sub">The AI router is processing your details using the optimal engine...</p>
+        
+        <div class="skeleton-wrapper">
+          <div class="skeleton-line headline"></div>
+          <div class="skeleton-line subheadline"></div>
+          <div class="skeleton-line point"></div>
+          <div class="skeleton-line point"></div>
+          <div class="skeleton-line point"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 5: COPY REVIEW AND REFINEMENT -->
+    <section id="screen-copy-review" class="screen hidden">
+      <div class="copy-review-container glass-panel">
+        <h2>Refine Generated Copy</h2>
+        <p class="subtitle">Our AI generated this professional marketing copy. Review and adjust the text as needed.</p>
+
+        <div class="copy-fields-editor">
+          <div class="form-group">
+            <label for="edit-headline">Headline</label>
+            <input type="text" id="edit-headline" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="edit-subheadline">Subheadline</label>
+            <textarea id="edit-subheadline" rows="2" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Opportunities / Bullet Points (Keep to 3-5 items, under 5 words each)</label>
+            <div id="edit-points-list" class="points-editor-list">
+              <!-- Dynamically populated inputs -->
+            </div>
+            <button type="button" class="btn-secondary btn-sm mt-2" onclick="app.addNewPointInput()">+ Add Opportunity Point</button>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-cta">Call to Action (CTA)</label>
+            <input type="text" id="edit-cta" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="edit-cta-link">CTA Hyperlink URL (Optional)</label>
+            <input type="url" id="edit-cta-link" placeholder="e.g. https://wa.me/1234567890 or RSVP form URL">
+          </div>
+        </div>
+
+        <div class="ai-source-badge">
+          <span>Copy Generation Engine: </span>
+          <strong id="ai-engine-used">Gemini 1.5 Flash</strong>
+        </div>
+
+        <div class="wizard-actions">
+          <button class="btn-secondary" onclick="app.modifyInputs()">Modify Inputs</button>
+          <button class="btn-primary" onclick="app.proceedToTemplateSelection()">Generate Visual Banner</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 6: VISUAL PREVIEW & EXPORT -->
+    <section id="screen-preview-export" class="screen hidden">
+      <div class="preview-layout">
+        
+        <!-- Left Sidebar: Controls -->
+        <div class="preview-sidebar glass-panel">
+          <h2>Design Controls</h2>
+          
+          <!-- Template Selector -->
+          <div class="control-group">
+            <label class="form-label">Template Style</label>
+            <div class="style-options">
+              <button class="btn-style active" onclick="app.changeTemplateStyle('premium')">
+                <span class="style-preview premium"></span>
+                <span class="style-name">Clean Corporate Split</span>
+              </button>
+              
+              <button class="btn-style" onclick="app.changeTemplateStyle('gold')">
+                <span class="style-preview gold"></span>
+                <span class="style-name">Minimalist Light</span>
+              </button>
+
+              <button class="btn-style" onclick="app.changeTemplateStyle('spotlight')">
+                <span class="style-preview spotlight"></span>
+                <span class="style-name">Crimson Split</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Photo Selector — populated dynamically by templates.js -->
+          <div id="photo-selector-container"></div>
+
+          <!-- Quick Layout Stats -->
+          <div class="control-group">
+            <label class="form-label">Dimensions</label>
+            <p id="preview-dimensions-info">1080 x 1080 px (Square)</p>
+            <span class="tip-banner">💡 Tip: You can double-click any text directly on the banner preview to edit it before downloading!</span>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-primary btn-block" onclick="app.exportBannerPng()">Download PNG</button>
+            <button class="btn-secondary btn-block" onclick="app.showScreen('screen-copy-review')">Edit Text Copy</button>
+            <button class="btn-text btn-block" onclick="app.showScreen('screen-select-type')">Create New Banner</button>
+          </div>
+        </div>
+
+        <!-- Right Side: Live Banner Preview Frame -->
+        <div class="preview-stage-container">
+          <div class="canvas-scale-wrapper">
+            <!-- Container captures by html2canvas -->
+            <div id="banner-preview-container" class="aspect-square template-premium">
+              <!-- Render engine will inject structure here dynamically -->
+               <hr>
+
+                  <h2>Generated Banner History</h2>
+
+                  <div id="banner-history"></div>
+            </div>
+          </div>
+          
+          <!-- Captions Box -->
+          <div class="captions-container glass-panel mt-6">
+            <h3>Social Media Captions</h3>
+            <p class="caption-desc">Ready-to-use captions corresponding to your banner theme.</p>
+            
+            <div class="tabs">
+              <button class="tab-btn active" onclick="app.switchCaptionTab('whatsapp')">WhatsApp Broadcast</button>
+              <button class="tab-btn" onclick="app.switchCaptionTab('linkedin')">LinkedIn Post</button>
+            </div>
+            
+            <div class="tab-content">
+              <div id="caption-whatsapp" class="caption-box">
+                <textarea id="whatsapp-caption-text" readonly></textarea>
+                <button class="btn-secondary btn-sm copy-btn" onclick="app.copyCaption('whatsapp')">Copy Caption</button>
+              </div>
+              
+              <div id="caption-linkedin" class="caption-box hidden">
+                <textarea id="linkedin-caption-text" readonly></textarea>
+                <button class="btn-secondary btn-sm copy-btn" onclick="app.copyCaption('linkedin')">Copy Caption</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SCREEN 7: GENERATION HISTORY -->
+    <section id="screen-history" class="screen hidden">
+      <div class="section-header">
+        <h2>Your Generated Banners</h2>
+        <p>Browse previously generated banners saved in this browser. You can view, re-download, or modify them.</p>
+      </div>
+      <div class="history-controls glass-panel" style="margin-bottom: 2rem; padding: 1.25rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; border-radius: var(--border-radius); border: 1px solid var(--dark-border); background: var(--dark-panel);">
+        <div style="display: flex; flex: 1; min-width: 260px; gap: 0.75rem;">
+          <div style="position: relative; flex: 1;">
+            <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.9rem;">🔍</span>
+            <input type="text" id="history-search" placeholder="Search by Category, Speaker, Topic..." oninput="app.filterHistory()" style="width: 100%; padding: 10px 12px 10px 34px; border: 1px solid var(--dark-border); border-radius: 8px; font-family: var(--font-body); font-size: 0.9rem; background: var(--dark-bg); color: var(--text-primary); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--bni-crimson)'" onblur="this.style.borderColor='var(--dark-border)'">
+          </div>
+          <select id="history-filter-category" onchange="app.filterHistory()" style="padding: 10px 12px; border: 1px solid var(--dark-border); border-radius: 8px; font-family: var(--font-body); font-size: 0.9rem; background: var(--dark-bg); color: var(--text-primary); outline: none; cursor: pointer; min-width: 160px; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--bni-crimson)'" onblur="this.style.borderColor='var(--dark-border)'">
+            <option value="all">All Categories</option>
+            <option value="weekly_meeting">Weekly Meeting</option>
+            <option value="visitor_invite">Visitor Invite</option>
+            <option value="feature_presentation">Feature Presentation</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 0.75rem; align-items: center;">
+          <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;">Sort:</span>
+          <select id="history-sort-order" onchange="app.filterHistory()" style="padding: 10px 12px; border: 1px solid var(--dark-border); border-radius: 8px; font-family: var(--font-body); font-size: 0.9rem; background: var(--dark-bg); color: var(--text-primary); outline: none; cursor: pointer; min-width: 130px; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--bni-crimson)'" onblur="this.style.borderColor='var(--dark-border)'">
+            <option value="desc">Newest First</option>
+            <option value="asc">Oldest First</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="history-grid" class="history-grid">
+        <!-- History items dynamically loaded here -->
+      </div>
+      
+      <div id="history-empty-state" class="empty-state glass-panel hidden">
+        <p>No banners generated yet. Start creating by clicking the button below.</p>
+        <button class="btn-primary" onclick="app.showScreen('screen-select-type')">Create First Banner</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 8: ADMIN SETTINGS -->
+    <!-- SCREEN: MEMBER APPROVALS (Admin only) -->
+
+    <section id="screen-users" class="screen hidden">
+    <div class="admin-container">
+
+        <div class="section-header">
+            <h2>Member Approvals</h2>
+            <p>Review and manage all member registration requests.</p>
+        </div>
+
+        <div id="users-loading" class="hidden" style="text-align:center; padding: 3rem; color: var(--text-secondary);">
+            Loading requests...
+        </div>
+
+        <!-- PENDING SECTION -->
+        <div id="section-pending">
+            <h3 style="color: #D4AF37; margin: 1.5rem 0 0.75rem;">⏳ Pending Approval</h3>
+            <div id="pending-empty" class="empty-state hidden">
+                <p>✅ No pending approval requests at this time.</p>
+            </div>
+            <div id="pending-table-wrapper" class="glass-panel hidden">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th><th>Email</th><th>Role</th><th>Requested On</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pending-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- APPROVED SECTION -->
+        <div id="section-approved">
+            <h3 style="color: #38A169; margin: 2rem 0 0.75rem;">✅ Approved Members</h3>
+            <div id="approved-empty" class="empty-state hidden">
+                <p>No approved members yet.</p>
+            </div>
+            <div id="approved-table-wrapper" class="glass-panel hidden">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th><th>Email</th><th>Role</th><th>Approved On</th>
+                        </tr>
+                    </thead>
+                    <tbody id="approved-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- REJECTED SECTION -->
+        <div id="section-rejected">
+            <h3 style="color: #E53E3E; margin: 2rem 0 0.75rem;">❌ Rejected Requests</h3>
+            <div id="rejected-empty" class="empty-state hidden">
+                <p>No rejected requests.</p>
+            </div>
+            <div id="rejected-table-wrapper" class="glass-panel hidden">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th><th>Email</th><th>Role</th><th>Rejected On</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rejected-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</section>
+    <section id="screen-admin" class="screen hidden">
+      <div class="admin-container glass-panel">
+        <h2>BNI Lakshya Brand & System Settings</h2>
+        <p class="subtitle">Configure chapter branding defaults, meeting configurations, and AI router parameters.</p>
+
+        <div id="admin-save-success" class="success-message hidden" style="margin-bottom: 1.5rem; padding: 0.8rem; background: rgba(56, 161, 105, 0.1); border: 1px solid rgba(56, 161, 105, 0.2); border-radius: 6px;">Settings updated successfully!</div>
+        <div id="admin-save-error" class="error-message hidden" style="margin-bottom: 1.5rem; padding: 0.8rem; background: rgba(229, 62, 98, 0.1); border: 1px solid rgba(229, 62, 98, 0.2); border-radius: 6px;">Failed to update settings. Please try again.</div>
+
+        <form id="admin-settings-form" onsubmit="admin.saveSettings(event)">
+          
+          <div class="admin-section">
+            <h3>Chapter Branding Defaults</h3>
+            
+            <div class="form-row">
+              <div class="form-group col">
+                <label for="admin-chapter-name">Chapter Name</label>
+                <input type="text" id="admin-chapter-name" required>
+              </div>
+            </div>
+
+            <div class="form-group mt-2">
+              <label for="admin-footer-text">Footer Line / Chapter Motto</label>
+              <input type="text" id="admin-footer-text" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col">
+                <label for="admin-primary-color">Primary BNI Color</label>
+                <div class="color-picker-wrapper">
+                  <input type="color" id="admin-primary-color" required>
+                  <input type="text" id="admin-primary-color-hex" pattern="^#([A-Fa-f0-9]{6})$" required>
+                </div>
+              </div>
+              <div class="form-group col">
+                <label for="admin-secondary-color">Secondary Color (Sterling Grey)</label>
+                <div class="color-picker-wrapper">
+                  <input type="color" id="admin-secondary-color" required>
+                  <input type="text" id="admin-secondary-color-hex" pattern="^#([A-Fa-f0-9]{6})$" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-section">
+            <h3>Meeting Logistics (Defaults)</h3>
+            
+            <div class="form-row">
+              <div class="form-group col">
+                <label for="admin-default-time">Meeting Day & Time</label>
+                <input type="text" id="admin-default-time" placeholder="e.g. Thursday, 7:15 AM" required>
+              </div>
+              <div class="form-group col">
+                <label for="admin-default-venue">Venue Details</label>
+                <input type="text" id="admin-default-venue" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="admin-default-cta">Default CTA Link / Text</label>
+              <input type="text" id="admin-default-cta" required>
+            </div>
+          </div>
+
+          <div class="admin-section">
+            <h3>AI API Router Configuration</h3>
+            <p class="section-info">Securely set API keys for text generation. If empty, the app runs on the local rule-based system.</p>
+            
+            <div class="form-group">
+              <label for="admin-gemini-key">Gemini Generative AI API Key</label>
+              <input type="password" id="admin-gemini-key" placeholder="Enter Gemini API Key" autocomplete="new-password">
+            </div>
+
+            <div class="form-group">
+              <label for="admin-openai-key">OpenAI API Key</label>
+              <input type="password" id="admin-openai-key" placeholder="Enter OpenAI API Key" autocomplete="new-password">
+            </div>
+
+            <div class="form-group">
+              <label for="admin-grok-key">Grok AI API Key (Fallback)</label>
+              <input type="password" id="admin-grok-key" placeholder="Enter Grok API Key (Optional)" autocomplete="new-password">
+            </div>
+
+            <div class="error-tracker-card">
+              <span>Failed API Calls Tracker: </span>
+              <strong id="admin-error-count">0 calls</strong>
+              <button type="button" class="btn-text btn-sm ml-4" onclick="admin.resetErrorCount()">Reset Counter</button>
+            </div>
+          </div>
+
+
+
+          <div class="wizard-actions mt-6">
+            <button type="button" class="btn-secondary" onclick="app.showScreen('screen-select-type')">Cancel</button>
+            <button type="submit" class="btn-primary">Save Settings Configuration</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Notification Banner -->
+  <div id="toast-notification" class="toast hidden">
+    <span id="toast-message">Message here</span>
+  </div>
+
+  <!-- Javascript Logic Modules -->
+   <script type="module" src="js/firebase-auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/templates.js?v=1.0.1"></script>
+  <script src="js/renderer.js?v=1.0.1"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/api.js"></script>
+  <script type="module" src="js/app.js?v=1.0.1"></script>
+</body>
+</html>
