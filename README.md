@@ -60,6 +60,9 @@ An AI-powered banner generation platform built for **BNI Lakshya** to help membe
 BNI-Lakshya-AI-Banner-Studio/
 │
 ├── public/
+│   ├── assets/
+         └── stock/
+│   ├── exports/
 │   ├── css/
 │   ├── js/
 │   └── index.html
